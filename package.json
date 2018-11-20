@@ -1,0 +1,16 @@
+{
+  "name": "knn",
+  "version": "1.0.0",
+  "description": "Tugas KNN AI Tupro 3",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Diah Hevyka M",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "fs": "0.0.1-security",
+    "papaparse": "^4.6.1"
+  }
+}
