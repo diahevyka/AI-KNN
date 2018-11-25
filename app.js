@@ -40,6 +40,8 @@ const calculate_distance = (test, train) => {
 }
 
 const get_class = (sorted_distance) => {
+    var Y = [0, 0]
+    trimmed = sorted_distance[0:k]
 
 }
 
