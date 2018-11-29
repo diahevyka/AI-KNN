@@ -2,7 +2,6 @@ const fs = require('fs')
 const papa = require('papaparse')
 const train = fs.createReadStream('DataTrain_Tugas3_AI.csv')
 const test = fs.createReadStream('DataTest_Tugas3_AI.csv')
-const hasil = fs.createWriteStream('tebakan_Tugas3_AI.csv')
 
 const read_csv = async (data) => {
 	return new Promise((resolve, reject) => {

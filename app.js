@@ -2,7 +2,6 @@ const fs = require('fs')
 const papa = require('papaparse')
 const train = fs.createReadStream('DataTrain_Tugas3_AI.csv')
 const test = fs.createReadStream('DataTest_Tugas3_AI.csv')
-const hasil = fs.createWriteStream('tebakan_Tugas3_AI.csv')
 
 const read_csv = async (data) => {
 	return new Promise((resolve, reject) => {
@@ -59,7 +58,6 @@ const classification = (
 ) => {
 	const euclidean_scores = []
 	
-	// kategori kelas yang ada
 	let count_kelas = {
 		'0': 0,
 		'1': 0,
@@ -68,37 +66,27 @@ const classification = (
 	}
 
 	for (const data of dataTrain) {
-		// antisipasi agar tidak membandingkan dua titik yang sama
 		if (point[0] == data[0]) continue
 		
-		// menghitung nilai euclidean
 		const euclidean_score = euclidean_distance(point, data)
 		
-		// ambil nilai kelas (dari indeks terakhir suatu poin)
 		let kelas = data[data.length - 1]
 
-		// push semua scorenya untuk di lakukan proses sort
 		euclidean_scores.push({ score: euclidean_score, index: data[0], index2: point[0], kelas })
 	}
 
-	// sort scores dari nilai terkecil (paling dekat) ke paling besar
 	let sorted_scores = euclidean_scores.sort((a, b) => parseFloat(a.score) - parseFloat(b.score))
 
-	// ambil nilai dari paling kecil(dekat) sejumlah K
 	let selectedScoresByK = sorted_scores.slice(0, K)
 
-	// increment nilai kelas berdasar top K
 	for (const selected_point of selectedScoresByK) {
 		count_kelas[selected_point['kelas']] += 1
 	}
 
-	// ambil keys dari object count_kelas
 	let classes = Object.values(count_kelas);
 
-	// ambil maximum score dari classes yg didapat dari proses increment
 	let maximum_score = Math.max(...classes)
 
-	// ambil fix kelas suatu poin berdasar nilai increment terbesar
 	const fix_kelas = Object.keys(count_kelas).find(key => count_kelas[key] === maximum_score);
 
 	return fix_kelas
@@ -119,7 +107,6 @@ const classificationManyPoints = (dataTrain, dataTest, K, { isTest } = { isTest:
 		success_predict += predict_kelas == valid_kelas ? 1 : 0
 	}
 
-	// running hanya saat isTest di parameter bernilai true which is waktu pake dataTest beneran
 	if (isTest) {
 		const prepareData = dataTest.map((dt, index) => ({ 
 			Index: dt[0], 
@@ -131,7 +118,6 @@ const classificationManyPoints = (dataTrain, dataTest, K, { isTest } = { isTest:
 			Y: list_kelas[index] 
 		}))
 
-		// menghapus nama kolom diatas (agar tidak duplikat)
 		prepareData.shift(1)
 		
 		const csv = papa.unparse(prepareData, {	delimiter: "," })
@@ -170,23 +156,17 @@ const main = async () => {
 	const dataset = await read_csv(train)
 	const DATA_TEST = await read_csv(test)
 
-	// hilangin columns di dataTrain dari csv
 	dataset.shift()
 
-	const K = 5
+	const K = 17
 	const howManyTest = 50
 
 	const data = cross_validation_preparation(dataset, howManyTest)
 	const averageAccuracy = cross_validation(data, K)
 
-	console.log(); // buat enter aja biar enak diliat
-	console.log({ averageAccuracy }); // rata-rata akurasi dari cross validation
+	console.log({ averageAccuracy });
 
 	const { list_kelas } = classificationManyPoints(dataset, DATA_TEST, K, { isTest: true })
-	// const accuracy = classificationManyPoints(data[3]['dataTrain'], data[3]['dataTest'], K)
-
-	// console.log({ accuracy });
-	// console.log({ list_kelas });
 }
 
 main()
