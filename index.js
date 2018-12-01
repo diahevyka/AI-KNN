@@ -17,7 +17,7 @@ const read_csv = async (data) => {
 const euclidean_distance = (
 	point = [ '99', '-0.770781', '0.602787', '-0.555278', '-1.397452', '1.380693', '0' ],
 	point2 = [ '99', '-0.770781', '0.602787', '-0.555278', '-1.397452', '1.380693', '0' ]
-) => {
+	) => {
 
 	const euclidean_score = (
 		Math.pow(point[1] - point2[1], 2) + 

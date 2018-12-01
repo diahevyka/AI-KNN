@@ -67,43 +67,33 @@ const classification = (
 
 	for (const data of dataTrain) {
 		if (point[0] == data[0]) continue
-		
 		const euclidean_score = euclidean_distance(point, data)
-		
 		let kelas = data[data.length - 1]
-
 		euclidean_scores.push({ score: euclidean_score, index: data[0], index2: point[0], kelas })
 	}
 
 	let sorted_scores = euclidean_scores.sort((a, b) => parseFloat(a.score) - parseFloat(b.score))
-
 	let selectedScoresByK = sorted_scores.slice(0, K)
-
+	
 	for (const selected_point of selectedScoresByK) {
 		count_kelas[selected_point['kelas']] += 1
 	}
 
 	let classes = Object.values(count_kelas);
-
 	let maximum_score = Math.max(...classes)
-
 	const fix_kelas = Object.keys(count_kelas).find(key => count_kelas[key] === maximum_score);
-
 	return fix_kelas
 }
 
 const classificationManyPoints = (dataTrain, dataTest, K, { isTest } = { isTest: false}) => {
 	const amountTest = dataTest.length
-
 	let success_predict = 0
 	let list_kelas = []
 	
 	for (const dTest of dataTest) {
 		const predict_kelas = classification(dTest, dataTrain, K)
 		list_kelas.push(predict_kelas)
-
 		const valid_kelas = dTest[dTest.length - 1 ]
-		
 		success_predict += predict_kelas == valid_kelas ? 1 : 0
 	}
 
@@ -119,7 +109,6 @@ const classificationManyPoints = (dataTrain, dataTest, K, { isTest } = { isTest:
 		}))
 
 		prepareData.shift(1)
-		
 		const csv = papa.unparse(prepareData, {	delimiter: "," })
 		fs.writeFileSync('tebakan_Tugas3_AI.csv', csv)
 	}
